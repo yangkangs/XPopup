@@ -82,19 +82,20 @@ public abstract class BasePopupView extends FrameLayout implements LifecycleObse
         setId(View.generateViewId());
         View contentView = LayoutInflater.from(context).inflate(getInnerLayoutId(), this, false);
         contentView.setAlpha(0);
-        if (Build.VERSION.SDK_INT > 34) {
-            //底部弹窗要留出一个状态栏的高度
-            ViewCompat.setOnApplyWindowInsetsListener(this, new androidx.core.view.OnApplyWindowInsetsListener() {
-                @NonNull
-                @Override
-                public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                    Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
-                    v.setPadding(0, 0, 0, systemInsets.bottom);
-                    return insets;
-                }
-            });
-        }
         addView(contentView);
+        if (Build.VERSION.SDK_INT <= 34) {
+            return;
+        }
+        //底部弹窗要留出一个状态栏的高度
+        ViewCompat.setOnApplyWindowInsetsListener(this, new androidx.core.view.OnApplyWindowInsetsListener() {
+            @NonNull
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
+                Insets systemInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+                v.setPadding(0, 0, 0, systemInsets.bottom);
+                return insets;
+            }
+        });
     }
 
     @NonNull
